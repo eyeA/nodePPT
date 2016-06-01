@@ -1,0 +1,672 @@
+<!--
+    Powered By nodePPT - This is probably the best web presentation tool so far!
+    version: 1.4.1
+    site: https://github.com/ksky521/nodePPT
+    date: 
+-->
+<!doctype html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Node.js 入门 - By eyea</title>
+    <link rel="stylesheet" media="all" href="./css/nodeppt.css">
+    <link rel="stylesheet" media="only screen and (max-device-width: 480px)" href="./css/phone.css">
+    
+    <link rel="stylesheet" href="./js/highlight/styles/monokai_sublime.css">
+    <link rel="stylesheet" href="./css/font-awesome.css">
+    
+<link rel="stylesheet" href="./css/theme.blue.css">
+</head>
+<body>
+<div class="slides">
+    <slides id="container">
+        <slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>Node.js 入门</h1>
+<h2>目的：普及一下Node.js相关知识</h2>
+<p><small>eyea</small></p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>讲座内容</h1>
+
+</hgroup><article>
+
+<ol>
+<li>Javascript简介</li>
+<li>Node.js简介**</li>
+<li>express简介*</li>
+<li>一个Node服务器实例*</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Javascript简介</h1>
+
+</hgroup><article>
+
+<p>Javascript是一门脚本语言...
+<img src="./img/Javascript.png" alt="什么是Javascript" title="什么是Javascript"></p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>基本语法简介</h1>
+
+</hgroup><article>
+
+<pre><code class="Javascript">function Person(name, age){
+    //存在判断与类型检测
+    this.name = name;//定义的时候并不知道它的类型
+    this.age = age;
+    this.male = ture;//or false
+    this.cars = [&#39;benchi&#39;,&#39;posche&#39;];
+    this.sayHello = function(afterSaying){//参数可以是一个函数
+        console.log(&quot;Hello, I am &quot; + this.name);
+        afterSaying &amp;&amp; afterSaying(); //如果传了函数做为第一个参数，执行它
+    }
+}
+Person.prototype.dream = function(){//原型链上的方法，属性在内存中只有一份拷贝
+    console.log(&quot;I am &quot; + this.age + &quot;, I want to fly.&quot;);
+}
+var bill = new Person(&#39;bill&#39;,12);//用new关键字，如果不用，你可以试试。。
+bill.sayHello(function(){
+    console.log(&#39;I want to sleep..!&#39;);
+});//Hello, I am bill. I want to sleep..
+bill.sayHello();//Hello, I am bill.
+bill.dream();
+</code></pre>
+<p class="moveIn"><span>Javascript 好灵活~ 可是, 不像C/C++/Java那样有确定的类型<span></p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>基本语法简介</h1>
+
+</hgroup><article>
+
+<p>常用语句,跟其他语言类似:</p>
+<ul>
+<li>if</li>
+<li>while</li>
+<li>for(遍历数组)</li>
+<li><strong>for-in</strong>(遍历对象)</li>
+<li>break</li>
+<li>...</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>JSON</h1>
+<ul>
+<li>Javascript的一个子集</li>
+<li>结构简单,轻量级</li>
+<li>常用来做数据交换(服务器与客户端数据传输)</li>
+</ul>
+<pre><code>{
+    &quot;success&quot;: true,
+    &quot;msg&quot;: &quot;get success!&quot;,
+    &quot;data&quot;:{
+        &quot;cars&quot;: [&quot;bmw&quot;,&quot;benchi&quot;,&quot;mazida&quot;]
+    }
+}
+</code></pre>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Node简介</h1>
+
+</hgroup><article>
+
+<p>Ryan Dahl是一名资深C/C++程序员,在Node诞生之前，主要工作都是围绕高性能Web服务器的。他的最初目标是写一个基于<strong>事件驱动、非阻塞I/O</strong>的Web服务器。经过他的深思熟虑，选择了Javascript语言而不是其他语言。经过两个月, 09年5月Node诞生了。之后，由于Node的优秀, Node的社区也越来越壮大，很多人都开始关注Node, 使用Node。</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>Node概览</h1>
+<img src="./img/chromevsnode.png" alt="chromevsnode" title="chromevsnode">
+<p style="font-size:18px;text-align: left;">Node.js采用C++编写而成，是一个Javascript的运行环境</p>
+
+<p style="font-size:18px;text-align: left;"><a href="https://github.com/nodejs/node/tree/master/deps/v8" target="_blank">V8</a>为Node.js带来了一套优秀的语言解释方案,让Javascript跑的飞快。</p>
+
+<p style="font-size:18px;text-align: left;"><a href="https://github.com/libuv/libuv" target="_blank">libuv</a>是一个高性能事件驱动的程序库，封装了 Windows 和 Unix、OSX、Android平台一些底层特性，为开发者提供了统一的 API.</p>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Node的几个概念</h1>
+
+</hgroup><article>
+
+<ul>
+<li>跨平台</li>
+<li>单线程</li>
+<li>异步 I/O</li>
+<li>事件与回调函数</li>
+<li>模块机制</li>
+<li>适合I/O密集型</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>跨平台(libuv)</h1>
+<h3>libuv is a multi-platform support library with a focus on <strong>asynchronous I/O</strong>.</h3>
+<ul>
+<li>Full-featured event loop backed by epoll, kqueue, IOCP, event ports.</li>
+<li>Asynchronous TCP and UDP sockets</li>
+<li>Asynchronous DNS resolution</li>
+<li>Asynchronous file and file system operations</li>
+<li>Signal handling</li>
+<li>Thread pool</li>
+<li>...</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>单线程</h1>
+<h2>传统单线程</h2>
+<ol>
+<li>在 Java 和 PHP 这类语言中，每个连接都会生成一个新线程，每个新线程可能需要 2 MB 的配套内存。消耗太大。</li>
+<li>线程的同步、死锁、切换, 会使逻辑变得相当复杂。</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>Node单线程</h1>
+<h2>Node中的<strong>Javascript</strong>代码跑在单线程环境中！</h2>
+<p style="text-align:left">优点:</p>
+<p style="text-align:left">1. 不用在意状态的同步问题，没有死锁，资源的竞争交给底层，对程序员屏蔽。</p>
+<p style="text-align:left">2. 没有线程上下文切换的开销。</p>
+
+<p style="text-align:left">缺点:</p>
+<p style="text-align:left">1. 无法直接利用多核CPU(有解决方案)。</p>
+<p style="text-align:left">2. 健壮性，错误会引起整个应用退出。</p>
+
+
+</hgroup><article>
+
+<p class="moveIn"><span>那么问题来了：单线程怎么处理并发啊？？？ <span></p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>两个概念</h1>
+
+</hgroup><article>
+
+<ul>
+<li>异步I/O</li>
+<li>事件与回调</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>I/O是昂贵的</h1>
+
+</hgroup><article>
+
+<img src="./img/io-cost.png" alt="io-cost" title="I/O代价">
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>同步？异步？</h1>
+
+</hgroup><article>
+
+<h2>同步</h2>
+<pre><code>getData(&#39;from_db&#39;);//消费时间M
+getData(&#39;from_remote_api&#39;);//消费时间N
+//共消费M+N
+</code></pre><h2>异步</h2>
+<pre><code>getData(&#39;from_db&#39;,function(result){
+    //消费时间M
+});
+getData(&#39;from_remote_api&#39;,function(result){
+    //消费时间N
+});
+//共消费max(M,N);
+</code></pre><p>随着应用的复杂性增加，异步的优势会越来越明显。</p>
+
+</article></section></slide>
+<slide class="slide hasnote"><aside class="note">
+<section>
+<p>阻塞I/O造成CPU等待I/O，浪费等待时间，CPU的处理能力不能得到充分利用。非阻塞I/O的特点就是调用之后会立即返回，返回后CPU的时间片可以用来处理其他事务。由于完整的I/O并没有完成，立即返回的并不是业务层期待的数据，而仅仅是当前调用的状态。当I/O结束时，回调函数被调用。</p>
+
+</section>
+</aside><section class="slide-wrapper"><hgroup>
+<h1>异步I/O与回调</h1>
+
+</hgroup><article>
+
+<h2>前端中的异步，以Ajax请求为例</h2>
+<pre><code>$.post(&#39;/url&#39;,{title:&#39;1301&#39;},function(data){
+    console.log(&#39;收到响应&#39;);
+})//对服务器发送POST请求，收到响应后再调用**回调函数**。
+console.log(&#39;发送ajax&#39;);
+//先输出&#39;发送ajax&#39;等收到服务器的响应，再输出&#39;收到响应&#39;。
+</code></pre><h2>Node中的异步，大多数是异步I/O，以读取文件为例</h2>
+<pre><code>var fs = require(&#39;fs&#39;);//file system 相关api
+fs.readFile(&#39;/path&#39;,function(err,file){
+    console.log(&#39;读取文件完成&#39;);
+});//回调函数并不是由开发者调用
+console.log(&#39;发起读取文件&#39;);
+//先输出&#39;发起读取文件&#39;,读完输出&#39;读取文件完成&#39;
+</code></pre><p>代码的编写顺序与执行顺序无关，可能会造成阅读上的困难！
+在流程控制方面，与常规的同步方式相比，不那么一步了然了。</p>
+
+</article></section></slide>
+<slide class="slide hasnote"><aside class="note">
+<section>
+<h2>Node底层调了libuv里面的线程池，这与Apache之类的创建多线程有何区别？？</h2>
+<p>在node.js内部，仍然是依靠线程和进程来进行数据访问、处理其他任务执行。然而，这些都没有明确地对你的代码暴露出来，所以你不需要额外担心内部如何处理I/O之间的交互。对比Apache的模型，它少去了很多线程以及线程开销，因为对每个连接来讲单独的线程不是必须的。仅仅是当你绝对需要让某个操作并发执行才会需要线程，但即便如此线程也是node.js自己管理的。所以说Node最擅长I/0密集型的场景。</p>
+
+</section>
+</aside><section class="slide-wrapper"><hgroup>
+<h1>Node的异步I/O</h1>
+
+</hgroup><article>
+
+<img src="./img/node-loop.png" alt="nodeloop" title="nodeloop">
+<p class="moveIn"><span>重点：在Node中,无论是什么平台，内部完成I/O任务的另有线程池。Javascript线程不会被I/O阻塞。 <span></p>
+
+</article></section></slide>
+<slide class="slide hasnote"><aside class="note">
+<section>
+<p>上层使用单线程，避免多线程死锁，状态同步等问题；利用底层的多线程实现异步 I/O，充分利用了硬件资源以提升性能。</p>
+
+</section>
+</aside><section class="slide-wrapper"><hgroup>
+<h1>整个异步I/O的流程(win)</h1>
+
+</hgroup><article>
+
+<img src="./img/async_call.jpg" alt="async_call" title="async_call">
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>事件机制</h1>
+
+</hgroup><article>
+
+<p>类似于浏览器中鼠标事件，Node也有事件机制。
+事件一般与回调一起使用。回调不都是异步调用的，也有普通的回调。</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>回调</h1>
+
+</hgroup><article>
+
+<p>Don&#39;t call me, I will call you!</p>
+<p>Node中的回调函数一般形式</p>
+<pre><code>function(err[,data]){
+   //错误先行！ 
+}
+</code></pre>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>模块机制--搭起Node生态圈</h1>
+
+</hgroup><article>
+
+<ol>
+<li>CommonJS规范</li>
+<li>Node的模块实现</li>
+<li>核心模块</li>
+<li>C/C++扩展模块</li>
+<li>模块调用栈</li>
+<li>包与NPM</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>CommonJS规范</h1>
+
+</hgroup><article>
+
+<p>由于Javascript本身没有模块系统。没有原生的支持密闭作用域或依赖管理。JavaScript没有包管理系统。不能自动加载和安装依赖。于是便有了<a href="http://www.commonjs.org" target="_blank">CommonJS</a>规范的出现。Node自身实现了require方法作为其引入模块的方法，同时NPM也基于CommonJS定义了包规范，实现了依赖管理和模块自动安装等功能。</p>
+<p>CommonJS规范的提出，让Javascript具有开发大型应用的基础能力，而不是停留在小脚本程序阶段。</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>CommonJS模块规范</h1>
+
+</hgroup><article>
+
+<h2>定义circle.js:</h2>
+<pre><code>var PI = Math.PI;
+exports.area = function (r) {
+    return PI * r * r;
+};//导出模块
+</code></pre><h2>使用</h2>
+<pre><code>var circle = require(&#39;./circle.js&#39;);
+console.log(circle.area(4));
+</code></pre><p>在require了这个文件之后，定义在exports对象上的方法便可以随意调用。</p>
+
+</article></section></slide>
+<slide class="slide hasnote"><aside class="note">
+<section>
+<p>在Node中，模块分为两类：</p>
+<ul>
+<li><p>核心模块</p>
+<blockquote>
+<p>在Node源码编译的过程中，编译进了二进制文件，在Node启动时，直接加载进内存，加载速度快。</p>
+</blockquote>
+</li>
+<li><p>文件模块</p>
+<blockquote>
+<p>文件模块在运行时动态加载，需要完整的引入过程。</p>
+</blockquote>
+</li>
+</ul>
+<p>Node的模块加载优先从缓存加载！</p>
+
+</section>
+</aside><section class="slide-wrapper"><hgroup>
+<h1>Node的模块机制实现</h1>
+
+</hgroup><article>
+
+<p>模块引入过程：</p>
+<ol>
+<li>路径分析</li>
+<li>文件定位</li>
+<li>编译执行(??)</li>
+</ol>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>模块编译</h1>
+
+</hgroup><article>
+
+<p>在Node中，每个文件模块都是一个对象，它的定义如下：</p>
+<pre><code>function Module(id, parent) {
+  this.id = id;
+  this.exports = {};
+  this.parent = parent;
+  if (parent &amp;&amp; parent.children) {
+    parent.children.push(this);
+  }
+
+  this.filename = null;
+  this.loaded = false;
+  this.children = [];
+}
+</code></pre><p>编译和执行是引入文件模块的最后一个阶段。定位到具体的文件后，Node会新建一个模块对象，然后根据路径载入并编译。对于不同的文件扩展名，其载入方法也有所不同。</p>
+
+</article></section></slide>
+<slide class="slide hasnote"><aside class="note">
+<section>
+<p>小坑：exports VS module.exports</p>
+
+</section>
+</aside><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>Javascript模块的编译</h1>
+<pre><code>(function(exports,require,module,__filename,__dirname){//对Javascript进行了头尾的包装
+    var PI = Math.PI;
+    exports.area = function (r) {
+        return PI * r * r;
+    };
+})
+</code></pre><p>每个模块之间进行了隔离，包装之后经过Node原生模块的处理，给它加上上面的参数执行后，exports对象上的属性暴露出来了。</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>C/C++模块的编译和JSON文件的编译</h1>
+
+</hgroup><article>
+
+<ul>
+<li>Node调用process.dlopen()方法加载和执行.node文件，实际上.node的模块文件是已经编译好的文件。</li>
+<li>JSON文件利用fs模块读取，常用在配置文件中。</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>核心模块</h1>
+
+</hgroup><article>
+
+<ol>
+<li>C/C++编写的模块(src下)</li>
+<li>Javascript编写的模块(lib下)</li>
+</ol>
+<p>纯C/C++模块编写的部分称为内建模块</p>
+<blockquote>
+<p>文件模块&lt;--核心模块(JS)&lt;--内建模块(C/C++)</p>
+</blockquote>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>写Node扩展模块(C++)</h1>
+
+</hgroup><article>
+
+<p>在需要一些性能要求比较高的场合(位运算，编码转码)，或者一些特定的场合使用</p>
+<pre><code class="c++">#include &lt;node.h&gt;
+#include &lt;v8.h&gt;
+using namespace v8;  
+Handle&lt;Value&gt; Method(const Arguments&amp; args) {
+  HandleScope scope;
+  return scope.Close(String::New(&quot;Hello world!&quot;));
+}
+
+void init(Handle&lt;Object&gt; target) {
+  target-&gt;Set(String::NewSymbol(&quot;sayHello&quot;),
+      FunctionTemplate::New(Method)-&gt;GetFunction());
+}
+NODE_MODULE(hello, init)
+</code></pre>
+<p>编译之后等价于:</p>
+<pre><code>exports.sayHello = function(){
+    return &#39;Hello world!&#39;
+}
+</code></pre><p>对用户来说，用require就能使用模块。</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>模块之间的调用关系</h1>
+
+</hgroup><article>
+
+<img src="./img/Node_module_call.jpg" alt="Node模块间调用关系">
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>包与npm</h1>
+
+</hgroup><article>
+
+<p>包的出现，在模块的基础上进一步组织Javascript代码。
+<img src="./img/package.jpg" alt="package" title="package"></p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>包描述文件package.json</h1>
+
+</hgroup><article>
+
+<pre><code>{
+  &quot;name&quot;: &quot;TechNode&quot;,
+  &quot;version&quot;: &quot;1.0.0&quot;,
+  &quot;description&quot;: &quot;socket.io+Angular&quot;,
+  &quot;main&quot;: &quot;app.js&quot;,
+  &quot;scripts&quot;: {
+    &quot;start&quot;: &quot;node app.js&quot;
+  },
+  &quot;author&quot;: &quot;liz&quot;,
+  &quot;license&quot;: &quot;ISC&quot;,
+  &quot;dependencies&quot;: {
+    &quot;connect&quot;: &quot;^2.27.6&quot;,
+    &quot;express&quot;: &quot;^3.18.6&quot;,
+    &quot;mongoose&quot;: &quot;^3.8.21&quot;,
+    &quot;socket.io&quot;: &quot;^1.2.1&quot;,
+  }
+}
+</code></pre><p>使用npm install 就能安装依赖的包了！</p>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>npm-&gt; Node 包管理工具(Node自带)</h1>
+
+</hgroup><article>
+
+<p>常用命令:</p>
+<ul>
+<li>npm install</li>
+<li>npm uninstall</li>
+<li>npm update</li>
+<li>npm publish</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>常用第三方Node模块/包</h1>
+
+</hgroup><article>
+
+<h2>尽在<a href="https://www.npmjs.com/" target="_blank">npm</a></h2>
+<ul>
+<li>http-server(简单的web服务器)</li>
+<li>express(服务器搭建)</li>
+<li>socket.io(服务器推送)</li>
+<li>node-inspector(调试工具)</li>
+<li>mocha(测试工具)</li>
+<li>sqlite</li>
+<li>大量用于前端的工具(glup,bower,browserify..)</li>
+<li>...</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>express简介</h1>
+
+</hgroup><article>
+
+<ul>
+<li>Fast, unopinionated, minimalist web framework.</li>
+<li>非常流行的一个用来快速搭建Web服务器的框架</li>
+<li>基于原生的http，做了很多扩展</li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>中间件</h1>
+
+</hgroup><article>
+
+<p>简单说，中间件（middleware）就是处理HTTP请求的函数。它最大的特点就是，一个中间件处理完，再传递给下一个中间件。按照注册顺序将req,res给每个中间件处理。流式处理。</p>
+<pre><code>var app = express();
+app.use(function(request, response, next) {//use()方法注册中间件。
+  console.log(&quot;In comes a &quot; + request.method + &quot; to &quot; + request.url);
+  next();//传递给下一个中间件
+});
+app.use(function(request, response) {
+  response.writeHead(200, { &quot;Content-Type&quot;: &quot;text/plain&quot; });
+  response.end(&quot;Hello world!\n&quot;);
+});
+</code></pre>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>路由</h1>
+
+</hgroup><article>
+
+<p>在express中提供了一些rest风格的方法
+get、post、put、delete等，它们都是use的别名。</p>
+<pre><code>app.get(&quot;/hello/:who&quot;, function(req, res) {
+  res.end(&quot;Hello, &quot; + req.params.who + &quot;.&quot;);
+});
+//get方法则是只有GET动词的HTTP请求通过该中间件，它的第一个参数是请求的路径。
+//由于get方法的回调函数没有调用next方法，所以只要有一个中间件被调用了，
+//后面的中间件就不会再被调用了。
+</code></pre><p>mapbox-studio里面的一段代码</p>
+<pre><code>app.get(&#39;/source/:z(\\d+)/:x(\\d+)/:y(\\d+):scale(@\\d+x).:format([\\w\\.]+)&#39;,
+ middleware.source, cors(), tile);
+app.get(&#39;/style/:z(\\d+)/:x(\\d+)/:y(\\d+).:format([\\w\\.]+)&#39;,
+ middleware.style, cors(), tile);
+</code></pre>
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>一个完整的服务器实例</h1>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><hgroup>
+<h1>学习参考</h1>
+
+</hgroup><article>
+
+<ul>
+<li>《深入浅出Node.js》,朴灵</li>
+<li><a href="http://javascript.ruanyifeng.com/nodejs/express.html" target="_blank">express学习</a></li>
+</ul>
+
+</article></section></slide>
+<slide class="slide"><section class="slide-wrapper"><article class="flexbox vcenter">
+<h1>谢谢</h1>
+
+</article></section></slide>
+        
+
+        <!-- <slide class="slide logoslide dark nobackground">
+            <article class="flexbox vcenter">
+                <h2 style="color: white;">Powered By nodePPT v1.4.1</h2>
+            </article>
+        </slide> -->
+        <div class="slideTip" id="tip"></div>
+    </slides>
+</div>
+<canvas id="drawBoard" class="draw-board" width="900" height="700"></canvas>
+<div class="progress"><span id="progress"></span></div>
+<div id="_buttons">
+    <div class="_btn-box" id="_btn-box" style="display:none;">
+        <button class="fa fa-arrow-circle-left" id="_btn-prev"></button>
+        <button class="fa fa-arrow-circle-right" id="_btn-next"></button>
+        <button class="fa fa-paint-brush" id="_btn-brush"></button>
+        <button class="fa fa-compress" id="_btn-overview" data-toggle="fa fa-expand"></button>
+    </div>
+    <button class="fa fa-bars" id="_btn-bar"  data-toggle="fa fa-close"></button>
+</div>
+<script src="./js/mixjs/lib/mix.0.3.0.min.js"></script>
+<script>
+var base = location.protocol + '//' + location.host;
+
+var path = (location.pathname + '#').split('/').filter(function(v){
+    return !!v;
+});
+path.pop();
+path = path.join('/');
+MixJS.config({
+    baseURL: [ base, path, 'js'].join('/')+'/'
+});
+
+</script>
+<script src="./js/mixjs/lib/event/broadcast.js"></script>
+<script src="./js/nodeppt.js"></script>
+<script>
+Slide.init({
+    containerID: 'container',
+    drawBoardID: 'drawBoard',
+    slideClass: '.slide',
+    buildClass: '.build',
+    progressID: 'progress',
+    transition: 'moveIn',
+    width: 1100,
+    dir: './',
+    
+    //打开下面的注释就开启postMessage方式
+    //访问网址127.0.0.1:8080/ppt/demo#client
+    control:{
+        type: 'postMessage',
+        args:{
+            isControl:  false
+        }
+    },
+    
+    tipID: 'tip'
+});
+MixJS.loadJS('highlight/highlight.pack.js',function(){
+    hljs.tabReplace = '  ';
+    hljs.initHighlightingOnLoad();
+});
+</script>
+<script src="./js/demo.js"></script>
+<link rel="stylesheet" href="./css/demo.css">
+<script src="./js/zoom.js"></script>
+
+<!--placeholder-->
+</body>
+</html>
