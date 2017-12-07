@@ -9,8 +9,6 @@ usemathjax: yes
 
 
 <!-- 测试用 -->
-[slide]
-[移动端高清屏适配方案](http://www.zeakhold.com/231.html)
 
 
 
@@ -110,14 +108,32 @@ meta viewport 中的通用属性：<br>
 [/note]
 <!-- 移动端适配开始 -->
 [slide]
-
 ## 移动端的适配漫谈
 
 [slide data-transition="glue"]
 ### 移动端适配 我们关注哪些问题呢？
 ---
 * 布局(适配方案)  {:&.zoomin}
+  * 几篇文章 (note)
+  * 注意布局(rem)和字体(dpr->px)的不同方案
+
 * 兼容(性能)
+  * [High Performance Animations](https://www.html5rocks.com/zh/tutorials/speed/high-performance-animations/)
+* [quirksmode](https://www.quirksmode.org/mobile/overview.html)
+[note]
+    * [移动端高清屏适配方案](http://www.zeakhold.com/231.html)
+    * [网易、淘宝的font-size思考](http://www.cnblogs.com/lyzg/p/4877277.html)
+    * [移动端高清、多屏适配方案](http://div.io/topic/1092)
+    * [github: 移动端适配方案上](https://github.com/riskers/blog/issues/17)
+    * [github: 移动端适配方案下](https://github.com/riskers/blog/issues/18)
+    * [使用PX来适配](https://github.com/peunzhang/pageResponse)
+    * [移动适配一点点](http://www.jianshu.com/p/3a5063028706?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation)
+    * [移动web资源整理](http://www.cnblogs.com/PeunZhang/p/3407453.html)    
+[/note]
+
+[slide]
+## *谢谢*
+### eyeseau
 
 
 
