@@ -128,7 +128,8 @@ meta viewport 中的通用属性：<br>
     * [github: 移动端适配方案下](https://github.com/riskers/blog/issues/18)
     * [使用PX来适配](https://github.com/peunzhang/pageResponse)
     * [移动适配一点点](http://www.jianshu.com/p/3a5063028706?utm_campaign=maleskine&utm_content=note&utm_medium=seo_notes&utm_source=recommendation)
-    * [移动web资源整理](http://www.cnblogs.com/PeunZhang/p/3407453.html)    
+    * [移动web资源整理](http://www.cnblogs.com/PeunZhang/p/3407453.html)
+    * [移动端Web页面适配方案](https://segmentfault.com/a/1190000008767416)   
 [/note]
 
 [slide]
